@@ -151,7 +151,8 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
 
 tilesApp.factory('socket', function($rootScope) {
     
-    var socket = io.connect();
+    var aws = 'http://54.148.36.98'; //Amazon Web Services Node server
+    var socket = io.connect(aws);
     
     return {
         on: function(eventName, callback) {
