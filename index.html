@@ -1,0 +1,29 @@
+<!doctype html>
+<html ng-app="tilesApp">
+  <head>
+    <title>Tiles</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body ng-controller="tileCtrl">
+    <h1>Tiles</h1>
+    <main>
+      <div class="tile" ng-repeat="tile in tiles" ng-style="{'background-color':tile.color, 'transform':tile.transform}" ng-mouseover="requestNextColor($index)" ng-click="requestNextColor($index)"></div>
+      </div>
+    </main>
+    <footer>
+    <nav>
+        <li><a ng-click="requestReset()">reset</a></li>
+        <li><a ng-click="requestAutoFill()">auto-fill</a></li>
+    </nav>
+    </footer>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <script src="http://www.softsynth.com/webaudio/webaudio_tools.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="webSynth.js"></script>
+  <script src="tileCtrl.js"></script>
+  <script>
+    var host = window.location.hostname;
+    var socket = io.connect('http://' + host);
+  </script>
+</html>
