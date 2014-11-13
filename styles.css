@@ -4,6 +4,7 @@
     margin: 5px;
     display: inline-block;
     transition: transform 1s;
+    -webkit-transition: -webkit-transform 1s;
     opacity: 0.8;
 }
 
