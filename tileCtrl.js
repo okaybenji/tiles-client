@@ -20,20 +20,25 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
             'rgb(237,20,91)'
         ];
         
+        //get the frequency in hertz of a given piano key
+        function getFreq(key) {
+            return Math.pow(2, (key-49)/12) * 440;
+        }
+        
         var sounds = [
-            130.81,
-            164.81,
-            196,
-            220,
-            261.63,
-            329.63,
-            392,
-            523.25,
-            587.33,
-            659.26,
-            783.99,
-            880,
-            1046.50
+            getFreq(28),
+            getFreq(32),
+            getFreq(35),
+            getFreq(37),
+            getFreq(40),
+            getFreq(44),
+            getFreq(47),
+            getFreq(52),
+            getFreq(54),
+            getFreq(56),
+            getFreq(59),
+            getFreq(61),
+            getFreq(64)
         ];
         
         var numTiles = 144;
