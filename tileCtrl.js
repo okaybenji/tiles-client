@@ -20,58 +20,13 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
             'rgb(237,20,91)'
         ];
         
-        //get the frequency in hertz of a given piano key
-        function getFreq(key) {
-            return Math.pow(2, (key-49)/12) * 440;
-        }
-        
-        var sounds = [
-            getFreq(28),
-            getFreq(32),
-            getFreq(35),
-            getFreq(37),
-            getFreq(40),
-            getFreq(44),
-            getFreq(47),
-            getFreq(52),
-            getFreq(54),
-            getFreq(56),
-            getFreq(59),
-            getFreq(61),
-            getFreq(64)
-        ];
-        
+        var sounds = [28,32,35,37,40,44,47,52,54,56,59,61,64]; //notes as keys on 88-key piano
         var numTiles = 144;
         var flipDelay = 300;
 
         var Tile = function(color) {
             this.color = color || 'none';
         };
-        
-        //server request functions
-        $scope.requestReset = function() {
-            $scope.reset();
-            socket.emit('requestReset');
-        };
-        $scope.requestAutoFill = function() {
-            $scope.autoFill();
-            socket.emit('requestAutoFill');
-        };
-        $scope.requestNextColor = function($index) {
-            $scope.tiles[$index].nextColor();
-            socket.emit('requestNextColor', $index);
-        };
-        
-        //watch for server commands
-        socket.on('reset', function() {
-            $scope.reset();
-        });
-        socket.on('autoFill', function() {
-            $scope.autoFill();
-        });
-        socket.on('nextColor', function($index) {
-            $scope.tiles[$index].nextColor();
-        });
         
         Tile.prototype = {
         
@@ -110,13 +65,47 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
             
         };
         
-        $scope.init = function init() {
+        //server request functions
+        $scope.requestReset = function() {
+            $scope.reset();
+            socket.emit('requestReset');
+        };
+        $scope.requestAutoFill = function() {
+            $scope.autoFill();
+            socket.emit('requestAutoFill');
+        };
+        $scope.requestNextColor = function($index) {
+            $scope.tiles[$index].nextColor();
+            socket.emit('requestNextColor', $index);
+        };
+        
+        //watch for server commands
+        socket.on('reset', function() {
+            $scope.reset();
+        });
+        socket.on('autoFill', function() {
+            $scope.autoFill();
+        });
+        socket.on('nextColor', function($index) {
+            $scope.tiles[$index].nextColor();
+        });
+        
+        var init = function init() {
             
             $scope.tiles=[];
             
             for (var i=0; i<numTiles; i++) {
                 //$scope.tiles.push(new Tile(colors[i%colors.length])); //option A: load tiles with colors (no animation)
                 $scope.tiles.push(new Tile);
+            }
+            
+            //get the frequency in hertz of a given piano key
+            function getFreq(key) {
+                return Math.pow(2, (key-49)/12) * 440;
+            }
+            
+            for (var i=0, ii=sounds.length; i<ii; i++) {
+                sounds[i] = getFreq(sounds[i]);
             }
             
             //color a tile as a hint that page is ready for user interaction
@@ -149,7 +138,7 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
             }, delay);
         }
         
-        $scope.init();
+        init();
         
     }
 ]);
