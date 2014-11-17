@@ -6,8 +6,8 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
         
         var colors = [
             'rgb(237,28,36)',
-            'rgb(248, 96, 0)',
-            'rgb(248, 162, 0)',
+            'rgb(248,96,0)',
+            'rgb(248,162,0)',
             'rgb(255,242,0)',
             'rgb(141,199,63)',
             'rgb(0,166,81)',
