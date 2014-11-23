@@ -23,6 +23,7 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
         var sounds = [28,32,35,37,40,44,47,52,54,56,59,61,64]; //notes as keys on 88-key piano
         var numTiles = 144;
         var flipDelay = 300;
+        var synth = new monosynth();
 
         var Tile = function(color) {
             this.color = color || 'none';
@@ -34,11 +35,11 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
                 var tile = this;
                 var i = colors.indexOf(tile.color);
                 tile.flip();
-                startTone(sounds[(i+1)%sounds.length]);
+                synth.start(sounds[(i+1)%sounds.length]);
                 //change color just as tile flips
                 $timeout(function() {
                     tile.color = colors[(i+1)%colors.length];
-                    stopTone();
+                    synth.stop();
                 }, flipDelay);
             },
             
@@ -48,13 +49,13 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
                 var noColor = (color === 'none');
                 if (!noColor) {
                     var i = colors.indexOf(color);
-                    startTone(sounds[i]);
+                    synth.start(sounds[i]);
                 }
                 tile.flip();
                 //change color just as tile flips
                 $timeout(function() {
                     tile.color = color;
-                    if (!noColor) {stopTone()};
+                    if (!noColor) {synth.stop()};
                 }, flipDelay);
             },
             
