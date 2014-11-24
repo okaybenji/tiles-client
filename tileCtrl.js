@@ -23,7 +23,9 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
         var sounds = [28,32,35,37,40,44,47,52,54,56,59,61,64]; //notes as keys on 88-key piano
         var numTiles = 144;
         var flipDelay = 300;
-        var synth = new monosynth();
+        var voices = [];
+        voices[0] = new monosynth(); //add this client's voice array of voices (one per client)
+        voices[1] = new monosynth(); //for now, just have two voices; eventually, add one voice each time a client connects
 
         var Tile = function(color) {
             this.color = color || 'none';
@@ -31,15 +33,16 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
         
         Tile.prototype = {
         
-            nextColor: function nextColor() {
+            nextColor: function nextColor(voice) {
                 var tile = this;
                 var i = colors.indexOf(tile.color);
+                var voice = voice || 0; //default to own voice
                 tile.flip();
-                synth.start(sounds[(i+1)%sounds.length]);
+                voices[voice].start(sounds[(i+1)%sounds.length]);
                 //change color just as tile flips
                 $timeout(function() {
                     tile.color = colors[(i+1)%colors.length];
-                    synth.stop();
+                    voices[voice].stop();
                 }, flipDelay);
             },
             
@@ -49,13 +52,13 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
                 var noColor = (color === 'none');
                 if (!noColor) {
                     var i = colors.indexOf(color);
-                    synth.start(sounds[i]);
+                    voices[0].start(sounds[i]);
                 }
                 tile.flip();
                 //change color just as tile flips
                 $timeout(function() {
                     tile.color = color;
-                    if (!noColor) {synth.stop()};
+                    if (!noColor) {voices[0].stop()};
                 }, flipDelay);
             },
             
@@ -88,7 +91,7 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
             $scope.autoFill();
         });
         socket.on('nextColor', function($index) {
-            $scope.tiles[$index].nextColor();
+            $scope.tiles[$index].nextColor(1); //for now, just use 2nd voice for other clients
         });
         
         var init = function init() {
