@@ -8,7 +8,6 @@
     <h1>Tiles</h1>
     <main>
       <div class="tile" ng-repeat="tile in tiles" ng-style="{'background-color':tile.color, 'transform':tile.transform, '-ms-transform':tile.transform, '-webkit-transform':tile.transform}" ng-mouseover="requestNextColor($index)" ng-click="requestNextColor($index)"></div>
-      </div>
     </main>
     <footer>
     <nav>
@@ -19,6 +18,6 @@
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-  <script src="monosynth.js"></script>
+  <script src="submono.js"></script>
   <script src="tileCtrl.js"></script>
 </html>
