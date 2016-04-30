@@ -106,7 +106,7 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
       $scope.tiles=[];
 
       for (var i=0; i<numTiles; i++) {
-        $scope.tiles.push(new Tile);
+        $scope.tiles.push(new Tile());
       }
 
       // get the frequency in hertz of a given piano key
@@ -151,8 +151,8 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
 ]);
 
 tilesApp.factory('socket', function($rootScope) {
-  var aws = 'http://54.148.36.98'; // Amazon Web Services Node server
-  var socket = io.connect(aws);
+  var cloud9 = "https://tiles-server-okaybenji.c9users.io";
+  var socket = io.connect(cloud9);
 
   return {
     on: function(eventName, callback) {
