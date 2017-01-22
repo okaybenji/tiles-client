@@ -1,8 +1,8 @@
 var tilesApp = angular.module('tilesApp', []);
 
-tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
+tilesApp.controller('tileCtrl', ['$scope', '$timeout',
     
-  function tileCtrl($scope, $timeout, socket) {
+  function tileCtrl($scope, $timeout) {
 
     var colors = [
         'rgb(237,28,36)',
@@ -77,30 +77,43 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
       }
     };
 
+    var ws = new WebSocket('wss://banjo.benjikay.com/tiles');
+    // var ws = new WebSocket('ws://localhost:8100');
+    var send = function (msg) {
+      ws.send(JSON.stringify(msg));
+    };
+
     // server request functions
     $scope.requestReset = function() {
       $scope.reset();
-      socket.emit('requestReset');
+      send({action: 'reset'});
     };
     $scope.requestAutoFill = function() {
       $scope.autoFill();
-      socket.emit('requestAutoFill');
+      send({action: 'autoFill'});
     };
     $scope.requestNextColor = function($index) {
       $scope.tiles[$index].nextColor();
-      socket.emit('requestNextColor', $index);
+      send({action: 'nextColor', $index: $index});
     };
 
     // watch for server commands
-    socket.on('reset', function() {
-      $scope.reset();
-    });
-    socket.on('autoFill', function() {
-      $scope.autoFill();
-    });
-    socket.on('nextColor', function($index) {
-      $scope.tiles[$index].nextColor(1); // for now, just use 2nd voice for other clients
-    });
+    ws.onmessage = function(data, flags) {
+      var msg = JSON.parse(data.data);
+      var actions = {
+        reset: function() {
+          $scope.reset();
+        },
+        autoFill: function() {
+          $scope.autoFill();
+        },
+        nextColor: function() {
+          $scope.tiles[msg.$index].nextColor(1); // for now, just use 2nd voice for other clients
+        },
+      };
+
+      actions[msg.action]();
+    };
 
     var init = function init() {
       $scope.tiles=[];
@@ -149,29 +162,3 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout', 'socket',
     init();
   }
 ]);
-
-tilesApp.factory('socket', function($rootScope) {
-  var cloud9 = "https://tiles-server-okaybenji.c9users.io";
-  var socket = io.connect(cloud9);
-
-  return {
-    on: function(eventName, callback) {
-      socket.on(eventName, function() {
-        var args = arguments;
-        $rootScope.$apply(function() {
-          callback.apply(socket, args);
-        });
-      });
-  },
-    emit: function(eventName, data, callback) {
-      socket.emit(eventName, data, function() {
-        var args = arguments;
-        $rootScope.$apply(function() {
-          if (callback) {
-            callback.apply(socket, args);
-          }
-        });
-      });
-    }
-  };
-});
