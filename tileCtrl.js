@@ -77,8 +77,8 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout',
       }
     };
 
-    // var ws = new WebSocket('wss://banjo.benjikay.com/tiles');
-    var ws = new WebSocket('ws://localhost:8100');
+    var ws = new WebSocket('wss://banjo.benjikay.com/tiles');
+    // var ws = new WebSocket('ws://localhost:8100');
     var send = function (msg) {
       ws.send(JSON.stringify(msg));
     };
@@ -100,7 +100,6 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout',
     // watch for server commands
     ws.onmessage = function(data, flags) {
       var msg = JSON.parse(data.data);
-
       var actions = {
         reset: function() {
           $scope.reset();
