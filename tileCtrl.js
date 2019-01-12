@@ -1,7 +1,7 @@
 var tilesApp = angular.module('tilesApp', []);
 
 tilesApp.controller('tileCtrl', ['$scope', '$timeout',
-    
+
   function tileCtrl($scope, $timeout) {
 
     var colors = [
@@ -30,6 +30,12 @@ tilesApp.controller('tileCtrl', ['$scope', '$timeout',
     } else {
       audioCtx = new webkitAudioContext();
     }
+
+    // Click anywhere in the page to enable sound.
+    document.onclick = function() {
+      audioCtx.resume();
+    };
+
     var voices = [];
     voices[0] = new Monosynth(audioCtx); // add this client's voice array of voices (one per client)
     voices[1] = new Monosynth(audioCtx); // for now, just have two voices; eventually, add one voice each time a client connects
